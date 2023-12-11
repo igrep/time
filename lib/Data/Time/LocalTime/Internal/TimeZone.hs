@@ -77,11 +77,6 @@ instance Show TimeZone where
 utc :: TimeZone
 utc = TimeZone 0 False "UTC"
 
-{-# CFILES cbits/HsTime.c #-}
-foreign import ccall unsafe "HsTime.h get_current_timezone_seconds"
-    get_current_timezone_seconds ::
-        CTime -> Ptr CInt -> Ptr CString -> IO CLong
-
 getTimeZoneCTime :: CTime -> IO TimeZone
 getTimeZoneCTime ctime =
     with
@@ -90,14 +85,14 @@ getTimeZoneCTime ctime =
             with
                 nullPtr
                 ( \pcname -> do
-                    secs <- get_current_timezone_seconds ctime pdst pcname
+                    let secs = -9 * 60 * 60 :: CLong -- JST
                     case secs of
                         0x80000000 -> fail "localtime_r failed"
                         _ -> do
                             dst <- peek pdst
                             cname <- peek pcname
                             name <- peekCString cname
-                            return (TimeZone (div (fromIntegral secs) 60) (dst == 1) name)
+                            return (TimeZone (div (fromIntegral secs) 60) ((dst :: CInt) == 1) name)
                 )
         )
 

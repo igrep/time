@@ -20,6 +20,4 @@
 
 #define HS_CLOCK_REALTIME (uintptr_t)(CLOCK_REALTIME)
 
-long int get_current_timezone_seconds (time_t,int* pdst,char const* * pname);
-
 #endif
