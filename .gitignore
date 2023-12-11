@@ -3,7 +3,7 @@ autom4te.cache/
 conf*
 !configure.ac
 a.out
-configure
+!configure
 dist/
 dist-newstyle/
 dist-install
